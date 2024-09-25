@@ -1,0 +1,13 @@
+# service-pod-b.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-pod-b
+spec:
+  selector:
+    app: pod-b
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+

@@ -1,0 +1,84 @@
+-------------------------------------------------------------------------------
+NGINX Ingress controller
+  Release:       v1.11.2
+  Build:         46e76e5916813cfca2a9b0bfdc34b69a0000f6b9
+  Repository:    https://github.com/kubernetes/ingress-nginx
+  nginx version: nginx/1.25.5
+
+-------------------------------------------------------------------------------
+
+W0920 09:52:08.513950       7 client_config.go:659] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+I0920 09:52:08.514089       7 main.go:205] "Creating API client" host="https://10.96.0.1:443"
+I0920 09:52:08.519351       7 main.go:248] "Running in Kubernetes cluster" major="1" minor="31" git="v1.31.0" state="clean" commit="9edcffcde5595e8a5b1a35f88c421764e575afce" platform="linux/arm64"
+I0920 09:52:08.619594       7 main.go:101] "SSL fake certificate created" file="/etc/ingress-controller/ssl/default-fake-certificate.pem"
+I0920 09:52:08.630789       7 ssl.go:535] "loading tls certificate" path="/usr/local/certificates/cert" key="/usr/local/certificates/key"
+I0920 09:52:08.636361       7 nginx.go:271] "Starting NGINX Ingress controller"
+I0920 09:52:08.642324       7 event.go:377] Event(v1.ObjectReference{Kind:"ConfigMap", Namespace:"ingress-nginx", Name:"ingress-nginx-controller", UID:"ba2c5e57-e467-41a1-ab06-9c06bca6633b", APIVersion:"v1", ResourceVersion:"134227", FieldPath:""}): type: 'Normal' reason: 'CREATE' ConfigMap ingress-nginx/ingress-nginx-controller
+I0920 09:52:08.642835       7 event.go:377] Event(v1.ObjectReference{Kind:"ConfigMap", Namespace:"ingress-nginx", Name:"tcp-services", UID:"db9ba1e7-878b-4e9a-bb7e-4881ad301958", APIVersion:"v1", ResourceVersion:"134228", FieldPath:""}): type: 'Normal' reason: 'CREATE' ConfigMap ingress-nginx/tcp-services
+I0920 09:52:08.642860       7 event.go:377] Event(v1.ObjectReference{Kind:"ConfigMap", Namespace:"ingress-nginx", Name:"udp-services", UID:"dfffb60a-78a1-441f-8402-6d0a21c11294", APIVersion:"v1", ResourceVersion:"134229", FieldPath:""}): type: 'Normal' reason: 'CREATE' ConfigMap ingress-nginx/udp-services
+I0920 09:52:09.912309       7 store.go:440] "Found valid IngressClass" ingress="default/app-ingress" ingressclass="_"
+I0920 09:52:09.914230       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"default", Name:"app-ingress", UID:"955ffbf2-1c0a-47a6-8180-2744cc554b03", APIVersion:"networking.k8s.io/v1", ResourceVersion:"134144", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+I0920 09:52:09.947180       7 nginx.go:317] "Starting NGINX process"
+I0920 09:52:09.948212       7 leaderelection.go:250] attempting to acquire leader lease ingress-nginx/ingress-nginx-leader...
+I0920 09:52:09.951742       7 nginx.go:337] "Starting validation webhook" address=":8443" certPath="/usr/local/certificates/cert" keyPath="/usr/local/certificates/key"
+I0920 09:52:09.959201       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0920 09:52:10.000867       7 leaderelection.go:260] successfully acquired lease ingress-nginx/ingress-nginx-leader
+I0920 09:52:10.000957       7 status.go:85] "New leader elected" identity="ingress-nginx-controller-bc57996ff-7h7gw"
+I0920 09:52:10.007439       7 status.go:219] "POD is not ready" pod="ingress-nginx/ingress-nginx-controller-bc57996ff-7h7gw" node="minikube"
+I0920 09:52:10.039093       7 controller.go:213] "Backend successfully reloaded"
+I0920 09:52:10.039188       7 controller.go:224] "Initial sync, sleeping for 1 second"
+I0920 09:52:10.039354       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"ingress-nginx", Name:"ingress-nginx-controller-bc57996ff-7h7gw", UID:"30e50245-9258-47ad-90dd-a9dc76526564", APIVersion:"v1", ResourceVersion:"134266", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0920 09:53:10.017453       7 status.go:304] "updating Ingress status" namespace="default" ingress="app-ingress" currentValue=null newValue=[{"ip":"192.168.49.2"}]
+I0920 09:53:10.026114       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"default", Name:"app-ingress", UID:"955ffbf2-1c0a-47a6-8180-2744cc554b03", APIVersion:"networking.k8s.io/v1", ResourceVersion:"134434", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+192.168.49.2 - - [20/Sep/2024:10:37:47 +0000] "GET /app1 HTTP/1.1" 200 23 "-" "curl/7.81.0" 79 0.005 [default-app1-service-80] [] 10.244.0.60:5678 23 0.005 200 19fe0bc878e812cb10ba87fd0b5edc76
+192.168.49.2 - - [20/Sep/2024:10:37:52 +0000] "GET /app2 HTTP/1.1" 200 23 "-" "curl/7.81.0" 79 0.005 [default-app2-service-80] [] 10.244.0.61:5678 23 0.005 200 ddcf84b34f03994652e40aea646475fc
+192.168.49.2 - - [20/Sep/2024:10:40:29 +0000] "GET /app2 HTTP/1.1" 200 23 "-" "curl/7.81.0" 79 0.018 [default-app2-service-80] [] 10.244.0.61:5678 23 0.018 200 2d95274922ba79c1ae975abf089e3488
+192.168.49.2 - - [20/Sep/2024:10:40:31 +0000] "GET /app1 HTTP/1.1" 200 23 "-" "curl/7.81.0" 79 0.002 [default-app1-service-80] [] 10.244.0.60:5678 23 0.002 200 c760965a3463702f35d01d998965bc0a
+192.168.49.2 - - [20/Sep/2024:11:49:04 +0000] "GET /app1 HTTP/1.1" 200 23 "-" "curl/7.81.0" 79 0.007 [default-app1-service-80] [] 10.244.0.60:5678 23 0.007 200 8286a55c664f463dbfcff778bf922ff7
+I0920 13:44:04.143974       7 admission.go:149] processed ingress via admission controller {testedIngressLength:2 testedIngressTime:0.043s renderingIngressLength:2 renderingIngressTime:0.004s admissionTime:0.048s testedConfigurationSize:29.9kB}
+I0920 13:44:04.144487       7 main.go:107] "successfully validated configuration, accepting" ingress="default/example-ingress"
+I0920 13:44:04.152799       7 store.go:440] "Found valid IngressClass" ingress="default/example-ingress" ingressclass="nginx"
+I0920 13:44:04.154734       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"default", Name:"example-ingress", UID:"2637a8ff-f2ba-453f-a541-63f1e629e823", APIVersion:"networking.k8s.io/v1", ResourceVersion:"147444", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+I0920 13:44:04.155822       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0920 13:44:04.178441       7 controller.go:213] "Backend successfully reloaded"
+I0920 13:44:04.178712       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"ingress-nginx", Name:"ingress-nginx-controller-bc57996ff-7h7gw", UID:"30e50245-9258-47ad-90dd-a9dc76526564", APIVersion:"v1", ResourceVersion:"134266", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0920 13:44:10.014136       7 status.go:304] "updating Ingress status" namespace="default" ingress="example-ingress" currentValue=null newValue=[{"ip":"192.168.49.2"}]
+I0920 13:44:10.107817       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"default", Name:"example-ingress", UID:"2637a8ff-f2ba-453f-a541-63f1e629e823", APIVersion:"networking.k8s.io/v1", ResourceVersion:"147453", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+W0920 14:10:31.413976       7 controller.go:1216] Service "default/example-service" does not have any active Endpoint.
+W0920 14:10:34.747954       7 controller.go:1216] Service "default/example-service" does not have any active Endpoint.
+W0920 14:11:04.958070       7 controller.go:1216] Service "default/example-service" does not have any active Endpoint.
+W0920 14:11:08.292123       7 controller.go:1216] Service "default/example-service" does not have any active Endpoint.
+W0920 14:11:33.532966       7 controller.go:1110] Error obtaining Endpoints for Service "default/example-service": no object matching key "default/example-service" in local store
+I0920 14:11:33.534041       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0920 14:11:33.614021       7 controller.go:213] "Backend successfully reloaded"
+I0920 14:11:33.614510       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"ingress-nginx", Name:"ingress-nginx-controller-bc57996ff-7h7gw", UID:"30e50245-9258-47ad-90dd-a9dc76526564", APIVersion:"v1", ResourceVersion:"134266", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0920 14:13:58.141827       7 store.go:687] "secret was deleted and it is used in ingress annotations. Parsing" secret="default/basic-auth"
+E0920 14:13:58.144456       7 annotations.go:216] "error reading Ingress annotation" err="unexpected error reading secret default/basic-auth: no object matching key \"default/basic-auth\" in local store" name="BasicDigestAuth" ingress="default/example-ingress"
+W0920 14:13:58.147272       7 controller.go:1110] Error obtaining Endpoints for Service "default/example-service": no object matching key "default/example-service" in local store
+I0920 14:13:58.147861       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0920 14:13:58.200068       7 controller.go:213] "Backend successfully reloaded"
+I0920 14:13:58.200765       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"ingress-nginx", Name:"ingress-nginx-controller-bc57996ff-7h7gw", UID:"30e50245-9258-47ad-90dd-a9dc76526564", APIVersion:"v1", ResourceVersion:"134266", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0920 14:14:47.563394       7 store.go:611] "Secret was added and it is used in ingress annotations. Parsing" secret="default/basic-auth"
+W0920 14:14:47.568429       7 controller.go:1110] Error obtaining Endpoints for Service "default/example-service": no object matching key "default/example-service" in local store
+I0920 14:14:47.569041       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0920 14:14:47.613030       7 controller.go:213] "Backend successfully reloaded"
+I0920 14:14:47.614551       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"ingress-nginx", Name:"ingress-nginx-controller-bc57996ff-7h7gw", UID:"30e50245-9258-47ad-90dd-a9dc76526564", APIVersion:"v1", ResourceVersion:"134266", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0920 14:16:17.841297       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0920 14:16:17.870922       7 controller.go:213] "Backend successfully reloaded"
+I0920 14:16:17.871881       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"ingress-nginx", Name:"ingress-nginx-controller-bc57996ff-7h7gw", UID:"30e50245-9258-47ad-90dd-a9dc76526564", APIVersion:"v1", ResourceVersion:"134266", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0920 14:17:33.789710       7 admission.go:149] processed ingress via admission controller {testedIngressLength:2 testedIngressTime:0.026s renderingIngressLength:2 renderingIngressTime:0.001s admissionTime:0.027s testedConfigurationSize:29.8kB}
+I0920 14:17:33.789825       7 main.go:107] "successfully validated configuration, accepting" ingress="default/example-ingress"
+I0920 14:17:33.803515       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"default", Name:"example-ingress", UID:"2637a8ff-f2ba-453f-a541-63f1e629e823", APIVersion:"networking.k8s.io/v1", ResourceVersion:"149399", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+I0920 14:17:33.803669       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0920 14:17:34.526743       7 controller.go:213] "Backend successfully reloaded"
+I0920 14:17:34.533670       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"ingress-nginx", Name:"ingress-nginx-controller-bc57996ff-7h7gw", UID:"30e50245-9258-47ad-90dd-a9dc76526564", APIVersion:"v1", ResourceVersion:"134266", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+192.168.49.2 - - [20/Sep/2024:14:21:37 +0000] "GET / HTTP/1.1" 401 172 "-" "curl/7.81.0" 76 0.000 [default-example-service-80] [] - - - - b806756e02954dfbea04317e3af12637
+I0921 02:24:21.543986       7 admission.go:149] processed ingress via admission controller {testedIngressLength:2 testedIngressTime:0.024s renderingIngressLength:2 renderingIngressTime:0.002s admissionTime:0.026s testedConfigurationSize:25.9kB}
+I0921 02:24:21.544258       7 main.go:107] "successfully validated configuration, accepting" ingress="default/example-ingress"
+I0921 02:24:21.556380       7 event.go:377] Event(v1.ObjectReference{Kind:"Ingress", Namespace:"default", Name:"example-ingress", UID:"2637a8ff-f2ba-453f-a541-63f1e629e823", APIVersion:"networking.k8s.io/v1", ResourceVersion:"155454", FieldPath:""}): type: 'Normal' reason: 'Sync' Scheduled for sync
+I0921 02:24:21.559298       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0921 02:24:21.581075       7 controller.go:213] "Backend successfully reloaded"
+I0921 02:24:21.581459       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"ingress-nginx", Name:"ingress-nginx-controller-bc57996ff-7h7gw", UID:"30e50245-9258-47ad-90dd-a9dc76526564", APIVersion:"v1", ResourceVersion:"134266", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+I0921 02:24:59.566385       7 controller.go:193] "Configuration changes detected, backend reload required"
+I0921 02:24:59.615938       7 controller.go:213] "Backend successfully reloaded"
+I0921 02:24:59.617036       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"ingress-nginx", Name:"ingress-nginx-controller-bc57996ff-7h7gw", UID:"30e50245-9258-47ad-90dd-a9dc76526564", APIVersion:"v1", ResourceVersion:"134266", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
