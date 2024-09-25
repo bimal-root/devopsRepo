@@ -1,0 +1,13 @@
+altgraph==0.17.2
+asgiref==3.8.1
+distlib==0.3.8
+Django==4.2.16
+filelock==3.15.4
+future==0.18.2
+macholib==1.15.2
+platformdirs==4.2.2
+six==1.15.0
+sqlparse==0.5.1
+typing_extensions==4.12.2
+virtualenv==20.26.3
+

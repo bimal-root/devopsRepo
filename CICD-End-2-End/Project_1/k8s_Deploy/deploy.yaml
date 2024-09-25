@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoapp
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todoapp
+  template:
+    metadata:
+      labels:
+        app: todoapp
+    spec:
+      initContainers:
+      - name: migrate
+        image: bimalrajsharma07/todoapp:v24
+        command: ["python", "manage.py", "migrate"]
+      containers:
+      - name: todoapp
+        image: bimalrajsharma07/todoapp:v24
+        ports:
+        - containerPort: 8000
+        command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
