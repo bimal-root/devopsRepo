@@ -79,12 +79,12 @@ pipeline {
 	    sh '''
 	    cd CICD-End-2-End/Project_3_Java_Maven_Sonar_Argocd_Helm_K8S/k8s_deploy
 	    ls -ltr
-	    cat deployment.yaml
-	    sed -i "s/replaceImageTag/v${BUILD_NUMBER}/g" deployment.yaml
-	    cat deployment.yaml
+	    cat deployment.yml
+	    sed -i "s/replaceImageTag/v${BUILD_NUMBER}/g" deployment.yml
+	    cat deployment.yml
 	    git config user.name "Bimal Sharma"
 	    git config user.email "test123@example.com"
- 	    git add deployment.yaml
+ 	    git add deployment.yml
 	    git commit -m "Manifest changes for Image tag | Jenkinsfile"
 	    git push https://bimal-root:${GITHUB_AUTH_TOKEN}@github.com/bimal-root/devopsRepo.git HEAD:main
 	    '''
