@@ -14,9 +14,9 @@ pipeline {
 }
     stage ('test verify') {
       steps {
-	dir ('CICD-End-2-End/Project_3_Java_Maven_Sonar_Argocd_Helm_K8S/')
         script {
           sh '''
+          cd CICD-End-2-End/Project_3_Java_Maven_Sonar_Argocd_Helm_K8S/
           pwd && ls -la  
           '''
 }
