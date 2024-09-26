@@ -1,0 +1,43 @@
+pipeline {
+  agent {
+    docker {
+      image "abhishekf5/maven-abhishek-docker-agent:v1"
+
+}
+}
+  stages {
+    stage ('checkout') {
+      steps {
+        git url: "https://github.com/bimal-root/devopsRepo.git",
+	    branch: "main"
+}
+}
+    stage ('test verify') {
+      steps {
+	dir ('CICD-End-2-End/Project_3_Java_Maven_Sonar_Argocd_Helm_K8S/')
+        script {
+          sh '''
+          pwd && ls -la  
+          '''
+}
+}
+}
+//    stage ('') {
+
+//}
+//    stage ('') {
+ 
+//}
+//    stage ('') {
+
+//}
+//    stage ('') {
+
+//}
+//    stage ('') {
+
+//} 
+}
+
+
+}
