@@ -22,9 +22,17 @@ pipeline {
 }
 }
 }
-//    stage ('') {
-
-//}
+    stage ('Build & Test') {
+      steps {
+	script {
+	  sh '''
+	  cd CICD-End-2-End/Project_3_Java_Maven_Sonar_Argocd_Helm_K8S/spring-boot-app
+	  ls -ltr
+	  mvn clean package
+	  '''
+}
+}
+}
 //    stage ('') {
  
 //}
