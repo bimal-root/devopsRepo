@@ -1,0 +1,97 @@
+pipeline {
+  agent {
+    docker {
+      image "abhishekf5/maven-abhishek-docker-agent:v1"
+      args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
+}
+}
+  stages {
+    stage ('checkout') {
+      steps {
+        git url: "https://github.com/bimal-root/devopsRepo.git",
+	    branch: "main",
+	    credentialsId: 'github'
+}
+}
+    stage ('test verify') {
+      steps {
+        script {
+          sh '''
+          cd CICD-End-2-End/Project_3_Java_Maven_Sonar_Argocd_Helm_K8S/
+          pwd && ls -la  
+          '''
+}
+}
+}
+    stage ('Build & Test') {
+      steps {
+	script {
+	  sh '''
+	  cd CICD-End-2-End/Project_3_Java_Maven_Sonar_Argocd_Helm_K8S/spring-boot-app
+	  ls -ltr
+	  mvn clean package
+	  '''
+}
+}
+}
+    stage ('Static Code Analysis') {
+      environment {
+        SONAR_URL= "http://54.153.193.42:9000"
+}
+      steps {
+	withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
+	  script {	
+	    sh '''
+	    cd CICD-End-2-End/Project_3_Java_Maven_Sonar_Argocd_Helm_K8S/spring-boot-app
+	    mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}
+	    '''
+}
+}
+}
+}
+    stage ('Build Docker Image') {
+      steps {
+	script {
+	  sh '''
+	  cd CICD-End-2-End/Project_3_Java_Maven_Sonar_Argocd_Helm_K8S/spring-boot-app
+	  docker build -t bimalrajsharma07/ultimate-cicd:v${BUILD_NUMBER} .
+	  docker image ls
+	  '''	  
+}
+}
+}
+    stage ('Docker Login and Push Image') {
+      steps {
+	script {
+	  withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {		
+	    sh '''
+	    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+	    docker push bimalrajsharma07/ultimate-cicd:v${BUILD_NUMBER}
+	    '''
+}
+}
+}
+}
+    stage ('Update Manifest YAML file') {
+      steps {
+	script {
+	  withCredentials([string(credentialsId: 'github', variable: 'GITHUB_AUTH_TOKEN')]) {
+	    sh '''
+	    cd CICD-End-2-End/Project_3_Java_Maven_Sonar_Argocd_Helm_K8S/k8s_deploy
+	    ls -ltr
+	    cat deployment.yml
+	    sed -i "s/v10/v${BUILD_NUMBER}/g" deployment.yml
+	    cat deployment.yml
+	    git config user.name "Bimal Sharma"
+	    git config user.email "test123@example.com"
+ 	    git add deployment.yml
+	    git commit -m "Manifest changes for Image tag | Jenkinsfile"
+	    git push https://bimal-root:${GITHUB_AUTH_TOKEN}@github.com/bimal-root/devopsRepo.git HEAD:main
+	    '''
+}
+}
+}
+}
+
+}
+}
