@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: crashpodemo
+spec:
+  containers:
+  - name: crashpodemo
+    image: bimalrajsharma07/crashloopbacoffdemo:v2
+    ports:
+    - containerPort: 3000
+    resources:
+     limits:
+      cpu: "6m"
+      memory: "6Mi"
