@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    stages {
+       stage('Checkout') {
+         steps {
+	   git url: 'https://github.com/bimal-root/devopsRepo.git',
+	   branch: 'main',
+	   credentialsId: 'github'
+}
+}
+        stage('Build Backend') {
+            steps {
+                script {
+                    sh '''
+		    cd CICD-End-2-End/Project_4_MERNstack_Compose/mern/backend
+		    ls -la
+		    docker build -t bimalrajsharma07/mern_backend_image:latest .
+		    '''
+                }
+            }
+        }
+        stage('Build Frontend') {
+            steps {
+                script {
+		    sh '''
+		    cd CICD-End-2-End/Project_4_MERNstack_Compose/mern/frontend
+                    docker build -t bimalrajsharma07/mern_frontend_image:latest .
+		    '''
+                }
+            }
+        }
+	stage() {
+	  steps {
+	    script {
+	      withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {		
+	    sh '''
+	    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+	    docker push bimalrajsharma07/mern_backend_image:latest
+	    docker push bimalrajsharma07/mern_frontend_image:latest
+	    '''
+	      
+}
+}
+}
+}
+        stage('Deploy') {
+            steps {
+                script {
+                    // Use Docker Compose for deployment
+                   sh ''' 
+		   docker-compose -f docker-compose.prod.yml up -d
+		   '''
+                }
+            }
+        }
+    }
+}
+
