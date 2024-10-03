@@ -48,7 +48,8 @@ pipeline {
             steps {
                 script {
                     // Use Docker Compose for deployment
-                   sh ''' 
+                   sh '''
+		   cd CICD-End-2-End/Project_4_MERNstack_Compose
 		   docker-compose -f docker-compose.prod.yml up -d
 		   '''
                 }
