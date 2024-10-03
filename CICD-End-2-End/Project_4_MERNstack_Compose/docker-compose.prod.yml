@@ -1,6 +1,7 @@
 services:
   backend:
     image: bimalrajsharma07/mern_backend_image:latest
+    container_name: backend
     ports:
       - "5050:5050" 
     networks:
@@ -12,6 +13,7 @@ services:
 
   frontend:
     image: bimalrajsharma07/mern_frontend_image:latest
+    container_name: frontend
     ports:
       - "5173:5173"  
     networks:
@@ -21,6 +23,7 @@ services:
 
   mongodb:
     image: mongo:latest
+    container_name: mongodb
     ports:
       - "27017:27017"  
     networks:
