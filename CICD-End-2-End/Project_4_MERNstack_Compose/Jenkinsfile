@@ -15,7 +15,7 @@ pipeline {
                     sh '''
 		    cd CICD-End-2-End/Project_4_MERNstack_Compose/mern/backend
 		    ls -la
-		    sudo docker build -t bimalrajsharma07/mern_backend_image:latest .
+		    docker build -t bimalrajsharma07/mern_backend_image:latest .
 		    '''
                 }
             }
@@ -25,7 +25,7 @@ pipeline {
                 script {
 		    sh '''
 		    cd CICD-End-2-End/Project_4_MERNstack_Compose/mern/frontend
-                    sudo docker build -t bimalrajsharma07/mern_frontend_image:latest .
+                    docker build -t bimalrajsharma07/mern_frontend_image:latest .
 		    '''
                 }
             }
@@ -36,8 +36,8 @@ pipeline {
 	      withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {		
 	    sh '''
 	    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-	    sudo docker push bimalrajsharma07/mern_backend_image:latest
-	    sudo docker push bimalrajsharma07/mern_frontend_image:latest
+	    docker push bimalrajsharma07/mern_backend_image:latest
+	    docker push bimalrajsharma07/mern_frontend_image:latest
 	    '''
 	      
 }
@@ -49,7 +49,7 @@ pipeline {
                 script {
                     // Use Docker Compose for deployment
                    sh ''' 
-		   sudo docker-compose -f docker-compose.prod.yml up -d
+		   docker-compose -f docker-compose.prod.yml up -d
 		   '''
                 }
             }
