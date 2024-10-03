@@ -30,7 +30,7 @@ pipeline {
                 }
             }
         }
-	stage() {
+	stage('Docker Login and Image Push') {
 	  steps {
 	    script {
 	      withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {		
