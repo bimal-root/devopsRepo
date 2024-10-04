@@ -24,7 +24,7 @@ spec:
         - env:
             - name: MONGO_URI
               value: mongodb://mongo:27017/mydatabase
-          image: bimalrajsharma07/mern_backend_image:latest
+          image: bimalrajsharma07/mern_backend_imagev6
           name: backend
           ports:
             - containerPort: 5050
