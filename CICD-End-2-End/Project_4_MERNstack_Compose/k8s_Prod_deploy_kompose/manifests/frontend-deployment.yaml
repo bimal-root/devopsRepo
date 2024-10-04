@@ -24,7 +24,7 @@ spec:
         - env:
             - name: REACT_APP_API_URL
               value: http://backend:5050
-          image: bimalrajsharma07/mern_frontend_image:v11
+          image: bimalrajsharma07/mern_frontend_image:v12
           name: frontend
           ports:
             - containerPort: 5173
