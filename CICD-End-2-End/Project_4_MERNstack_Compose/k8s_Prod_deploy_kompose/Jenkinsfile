@@ -53,8 +53,8 @@ pipeline {
 		   cd CICD-End-2-End/Project_4_MERNstack_Compose/k8s_Prod_deploy_kompose/manifests
 		   ls -ltr
 		   cat frontend-deployment.yaml
-		   sed -i "s/v8/:v${BUILD_NUMBER}/g" frontend-deployment.yaml
-                   sed -i "s/v8/:v${BUILD_NUMBER}/g" backend-deployment.yaml
+		   sed -i "s/:v10/:v${BUILD_NUMBER}/g" frontend-deployment.yaml
+                   sed -i "s/:v10/:v${BUILD_NUMBER}/g" backend-deployment.yaml
 		   cat frontend-deployment.yaml
 		   cat backend-deployment.yaml
 		   git config user.name "Bimal Sharma"
