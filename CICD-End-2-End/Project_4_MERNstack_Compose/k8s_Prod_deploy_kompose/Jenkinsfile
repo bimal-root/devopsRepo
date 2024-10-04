@@ -1,0 +1,71 @@
+pipeline {
+    agent any
+
+    stages {
+       stage('Checkout') {
+         steps {
+	   git url: 'https://github.com/bimal-root/devopsRepo.git',
+	   branch: 'main',
+	   credentialsId: 'github'
+}
+}
+        stage('Build Backend') {
+            steps {
+                script {
+                    sh '''
+		    cd CICD-End-2-End/Project_4_MERNstack_Compose/mern/backend
+		    ls -la
+		    docker build -t bimalrajsharma07/mern_backend_image:v${BUILD_NUMBER} .
+		    '''
+                }
+            }
+        }
+        stage('Build Frontend') {
+            steps {
+                script {
+		    sh '''
+		    cd CICD-End-2-End/Project_4_MERNstack_Compose/mern/frontend
+                    docker build -t bimalrajsharma07/mern_frontend_image:v${BUILD_NUMBER} .
+		    '''
+                }
+            }
+        }
+	stage('Docker Login and Image Push') {
+	  steps {
+	    script {
+	      withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {		
+	    sh '''
+	    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+	    docker push bimalrajsharma07/mern_backend_image:v${BUILD_NUMBER}
+	    docker push bimalrajsharma07/mern_frontend_image:v${BUILD_NUMBER}
+	    '''
+	      
+}
+}
+}
+}
+        stage('Manifest checkout and Deploy') {
+            steps {
+                script {
+                  withCredentials([string(credentialsId: 'github', variable: 'GITHUB_AUTH_TOKEN')]) { // Use Docker Compose for deployment
+                   sh '''
+		   cd CICD-End-2-End/Project_4_MERNstack_Compose/k8s_Prod_deploy_kompose/manifest
+		   ls -ltr
+		   cat frontend-deployment.yaml
+		   sed -i "s/:latest/v${BUILD_NUMBER}/g" frontend-deployment.yaml
+                   sed -i "s/:latest/v${BUILD_NUMBER}/g" backend-deployment.yaml
+		   cat frontend-deployment.yaml
+		   cat backend-deployment.yaml
+		   git config user.name "Bimal Sharma"
+		   git config user.email "Bimalsharma@gmail.com"
+		   git add frontend-deployment.yaml backend-deployment.yaml
+		   git commit -m "Manifest changes for Image tag | Jenkins Pipeline"
+		   git push https://bimal-root:${GITHUB_AUTH_TOKEN}@github.com/bimal-root/devopsRepo.git HEAD:main
+		   '''
+                }
+	     }
+            }
+        }
+    }
+}
+
