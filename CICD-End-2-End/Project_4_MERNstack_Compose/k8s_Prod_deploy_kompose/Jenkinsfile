@@ -49,10 +49,8 @@ pipeline {
                 script {
                   withCredentials([string(credentialsId: 'github', variable: 'GITHUB_AUTH_TOKEN')]) { // Use Docker Compose for deployment
                    sh '''
-		   ls -ltr
-     		   cd CICD-End-2-End/Project_4_MERNstack_Compose/k8s_Prod_deploy_kompose
-		   ls -ltr
-		   cd CICD-End-2-End/Project_4_MERNstack_Compose/k8s_Prod_deploy_kompose/manifest
+		   pwd
+		   cd CICD-End-2-End/Project_4_MERNstack_Compose/k8s_Prod_deploy_kompose/manifests
 		   ls -ltr
 		   cat frontend-deployment.yaml
 		   sed -i "s/:latest/v${BUILD_NUMBER}/g" frontend-deployment.yaml
