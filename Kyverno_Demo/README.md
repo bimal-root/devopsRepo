@@ -37,8 +37,11 @@ spec:
 **Breakdown of the Policy:**
 
 **Kind**: Defines the policy type (ClusterPolicy), which means it applies cluster-wide.
+
 **validationFailureAction**: Ensures that any non-compliant pod deployment will be blocked.
+
 **match.resources.kinds**: The policy applies to Pod objects.
+
 **pattern.spec.containers.image**: The pattern enforces that the image is referenced by its digest (@sha256), indicating the image has been signed.
 
 **Step 2: Deploy the Policy in the Cluster**
@@ -89,7 +92,9 @@ spec:
 **Benefits of This Approach:**
 
 **Ensures Security:** By enforcing that only signed images (referenced by digest) can be used, you prevent unsigned or potentially tampered images from being deployed.
+
 **Immutable:** Pulling images by digest ensures immutability, preventing changes to the image at the tag level.
+
 **Compliance:** Helps organizations enforce image signing policies, meeting security and compliance requirements.
 
 This policy helps in securing your Kubernetes environment by only allowing the deployment of trusted, signed container images.
