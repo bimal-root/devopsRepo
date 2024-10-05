@@ -1,100 +1,62 @@
+Enforce Automated k8s cluster security using kyverno policy generator and argocd
+In this project we will learn how to enforce policies, governence and compliance on your kubernetes cluster. Whether your kubernetes cluster is on AWS, Azure, GCP or on-premises, this project will work without any additional changes.
 
-****Kyverno** **is a Kubernetes-native policy engine designed to enforce, validate, and mutate configurations in Kubernetes clusters. It allows administrators to define policies that ensure security, compliance, and best practices in a Kubernetes environment. Unlike other policy engines, Kyverno is specifically built for Kubernetes and works seamlessly with its resources without requiring an additional learning curve like OPA (Open Policy Agent).
+To explain the project with examples, using this configuration you can
 
-**Key Features of Kyverno**:
-1. Validation Policies: Ensure that resources meet specific criteria before being admitted to the cluster.
-2. Mutation Policies: Automatically modify resources (e.g., inject labels or annotations).
-3. Generation Policies: Create new resources or sync existing ones when certain conditions are met.
-4. Audit: Kyverno can audit existing resources to check policy compliance.
+Generate -> For example, Create a default network policy whenever a namespace is created.
+Validate -> For example, Block users from using latest tag in the deployment or pod resources.
+Mutate -> For example, Attach pod security policy for a pod that is created without any pod security policy configuration.
+Verify Images -> For example, Verify if the Images used in the pod resources are properly signed and verified images.
+High Level Design
+On a very high level, A DevOps Engineer will write the required Kyverno Policy custom resource and commits it to a Git repository. Argo CD which is pre configured with auto-sync to watch for resources in the git repo, deploys the Kyverno Policies on to the Kubernetes cluster.
 
-**Example Use Case: Enforcing Image Signing in Kubernetes:**
+https://user-images.githubusercontent.com/43399466/219934201-b542599a-7f8a-4b72-a1bf-5db6ba1bfade.png
 
-Let's say you want to ensure that only signed container images are deployed in your Kubernetes cluster. This can help verify that the images are from trustedsources and haven’t been tampered with. Here’s how Kyverno can help:
+Installation
+To setup this project you need to install Argo CD controller and Kyverno controller, Assuming you have Kubernetes installed.
 
-**Step 1: Define a Kyverno Policy for Image Signing**
+Installation of both Kyverno and Argo CD are pretty straight forward as both of them support Helm charts and also provide a consolidated installation yaml files.
 
-You can define a validation policy in Kyverno that ensures all container images come from a trusted registry and are signed.
+Kyverno
+There are two easy ways to install kyverno:
 
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: verify-image-signature
-spec:
-  validationFailureAction: enforce  # Ensures the policy is enforced (not just audited)
-  rules:
-    - name: check-image-signature
-      match:
-        resources:
-          kinds:
-            - Pod
-      validate:
-        message: "Image must be signed."
-        pattern:
-          spec:
-            containers:
-              - image: "*@sha256:*"   # This ensures the image is referenced by digest, implying it’s signed
+Using Helm
+Using the kubernetes manifest files
+Using Helm
+Add helm repo for kyverno
 
-**Breakdown of the Policy:**
+helm repo add kyverno https://kyverno.github.io/kyverno/
+helm repo update
+Install kyverno in HA mode
 
-**Kind**: Defines the policy type (ClusterPolicy), which means it applies cluster-wide.
+ helm install kyverno kyverno/kyverno -n kyverno --create-namespace --set replicaCount=3
+(or)
 
-**validationFailureAction**: Ensures that any non-compliant pod deployment will be blocked.
+Install kyverno in Standalone mode
 
-**match.resources.kinds**: The policy applies to Pod objects.
+helm install kyverno kyverno/kyverno -n kyverno --create-namespace --set replicaCount=1
+Install a specific version of kyverno
 
-**pattern.spec.containers.image**: The pattern enforces that the image is referenced by its digest (@sha256), indicating the image has been signed.
+helm search repo kyverno -l | head -n 10
+helm install kyverno kyverno/kyverno -n kyverno --create-namespace --version 2.6.5
+Using Kubernetes manifest yaml files
+kubectl create -f https://github.com/kyverno/kyverno/releases/download/v1.8.5/install.yaml
+Argo CD
+There are three ways to install Argo CD
 
-**Step 2: Deploy the Policy in the Cluster**
-Once the policy is defined, you can apply it to your Kubernetes cluster:
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/master/manifests/install.yaml
+Helm Charts, Follow the link
+Using the Argo CD Operator, Follow the link
+Demystifying Kyverno & Kyverno Policies
+Kyverno is a policy engine designed for Kubernetes
 
-kubectl apply -f image-signing-policy.yaml
+A Kyverno policy is a collection of rules. Each rule consists of a match declaration, an optional exclude declaration, and one of a validate, mutate, generate, or verifyImages declaration. Each rule can contain only a single validate, mutate, generate, or verifyImages child declaration.
 
-**Step 3: Test the Policy**
-Now, if a user tries to deploy a pod with an unsigned or improperly referenced image, the deployment will fail. For example, if they try to use this image without a digest:
+https://user-images.githubusercontent.com/43399466/219931973-14c0f501-ae49-4cab-9da5-b01950cc308f.png
 
-apiVersion: v1
-kind: Pod
-metadata:
-  name: unsigned-pod
-spec:
-  containers:
-    - name: app
-      image: myregistry.com/unsigned-image:latest
+Policies can be defined as cluster-wide resources (using the kind ClusterPolicy) or namespaced resources (using the kind Policy.) As expected, namespaced policies will only apply to resources within the namespace in which they are defined while cluster-wide policies are applied to matching resources across all namespaces. Otherwise, there is no difference between the two types.
 
-Kyverno will block the deployment and return an error like:
+Additional policy types include PolicyException and (Cluster)CleanupPolicy which are separate resources and described further in the documentation.
 
-Error: admission webhook "validate.kyverno.svc" denied the request: Image must be signed.
-
-
-Test the Policy: (Signed Image)
-
-**Signed Image: Deploy a pod with a signed image (image pulled by digest):**
-apiVersion: v1
-kind: Pod
-metadata:
-  name: signed-pod
-spec:
-  containers:
-    - name: app
-      image: myregistry.com/signed-image@sha256:123abc456def789ghi
-
-**Unsigned Image: If you try to deploy a pod with an unsigned image or one that does not reference a digest, like this:**
-
-apiVersion: v1
-kind: Pod
-metadata:
-  name: unsigned-pod
-spec:
-  containers:
-    - name: app
-      image: myregistry.com/unsigned-image:latest
-
-**Benefits of This Approach:**
-
-**Ensures Security:** By enforcing that only signed images (referenced by digest) can be used, you prevent unsigned or potentially tampered images from being deployed.
-
-**Immutable:** Pulling images by digest ensures immutability, preventing changes to the image at the tag level.
-
-**Compliance:** Helps organizations enforce image signing policies, meeting security and compliance requirements.
-
-This policy helps in securing your Kubernetes environment by only allowing the deployment of trusted, signed container images.
+Architecture
+https://user-images.githubusercontent.com/43399466/219931795-dce93e3b-9f78-42ef-ba5e-9aa685252e2f.png
