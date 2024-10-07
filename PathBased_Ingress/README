@@ -1,0 +1,57 @@
+
+Please find the steps and dependencies below:
+
+Dependencies:
+---------------
+1. Docker Desktop
+2. Minikube
+4. Kubectl
+3. Nginx Ingress Controller on Minikube
+
+Steps:
+-----------
+1. Create 2 Deployment YAML (app1-deploy and app2-deploy)
+- kubectl apply -f app1-deploy.yaml
+- kubectl apply -f app2-deploy.yaml
+
+2. Create 2 Service YAML (app1-service and app2-service)
+- kubectl apply -f app1-service.yaml
+- kubectl apply -f app2-service.yaml
+
+3. Create Ingress YAML file for Path Based Routing (ingress.yaml)
+- kubectl apply -f ingress.yaml
+
+=> The Ingress Controller will receive the incoming HTTPS traffic and route the request to backend Service using path based rules set on Ingress Resource, service will then route the traffic to actual application on Pod.
+
+4. Make sure 2 Pods, 2 Services and 1 Ingress resource is running
+- kubectl get pods
+- kubectl get svc
+- kubectl get ing
+
+5. Make sure Ingress Controller (Nginx) is installed:
+- minikube addons enable ingress
+- kubectl get pods -n ingress-nginx
+
+Check the name of the Ingress controller you deployed
+- kubectl get deployments -n ingress-nginx
+
+6. Ingress Controller Pod gets its IP when it detects new Ingress Resource
+- kubectl get ingress
+NAME     CLASS  HOSTS    ADDRESS    PORTS AGE
+app-ingress <none> example.com 192.168.49.2 80   65m
+
+7. Update your /etc/hosts file to point it to 'example.com' to Ingress Controller IP ( Run `minikube ip` in my case ). Add following line:
+192.168.49.2 example.com
+
+8. Access website from browser or CURL:
+=> I tried accessing it from '# minikube ssh' as shown in screenshot below
+
+curl http://example.com/app1
+curl http://example.com/app2
+
+9. You can login to the Ingress Controller Pod and check the route information for updated in the /etc/nginx/nginx.conf config file: (See screenshot)
+
+- kubectl exec -it <nginx-ingress-pod-name> -n kube-system -- /bin/sh
+- cat /etc/nginx/nginx.conf
+
+LinkedIn Post link: https://www.linkedin.com/posts/bimalsharma07_i-was-able-to-successfully-test-path-based-activity-7242875456754991104-pUXZ?utm_source=share&utm_medium=member_desktop
