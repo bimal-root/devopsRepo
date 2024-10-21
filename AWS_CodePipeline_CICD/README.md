@@ -56,3 +56,6 @@ In this final step, we'll trigger the CI process by making a change to our GitHu
 - Head over to the AWS CodePipeline console and navigate to your pipeline.
 - You should see the pipeline automatically kick off as soon as it detects the changes in your repository.
 - Sit back and relax while AWS CodePipeline takes care of the rest. It will fetch the latest code, trigger the build process with AWS CodeBuild, and deploy the application if you configured the deployment stage.
+
+- FOLLOW below Link to install Code Deoploy Agent on Ubuntu EC2 instance.
+- https://docs.aws.amazon.com/codedeploy/latest/userguide/codedeploy-agent-operations-install-ubuntu.html
